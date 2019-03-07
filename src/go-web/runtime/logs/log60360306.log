@@ -1,0 +1,5 @@
+[INFO][user.go:17]2019/03/06 20:05:58 [Router GetAllUsers]
+[ERROR][user.go:69]2019/03/06 20:56:12 [Models User Error 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '?' at line 1]
+[INFO][user.go:45]2019/03/06 21:02:17 [Login Fail]
+[INFO][user.go:45]2019/03/06 21:13:35 [Login Fail]
+[INFO][user.go:43]2019/03/06 21:17:39 [Login Success]
