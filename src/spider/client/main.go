@@ -2,7 +2,6 @@ package main
 
 import (
     "fmt"
-    "net"
     "os"
     "context"
     "github.com/apache/thrift/lib/go/thrift"
@@ -10,35 +9,52 @@ import (
 )
 
 const (
-    HOST = "127.0.0.1"
+    HOST = "localhost"
     PORT = "9090"
 )
 
 func main() {
-    transportFactory := thrift.NewTFramedTransportFactory(thrift.NewTTransportFactory())
+    socket,err := thrift.NewTSocket("localhost:9090")
+
+    transport := thrift.NewTBufferedTransport(socket, 8192)
+    // serialize
     protocolFactory := thrift.NewTBinaryProtocolFactoryDefault()
 
-    transport, err := thrift.NewTSocket(net.JoinHostPort(HOST, PORT))
     if err != nil {
-        fmt.Fprintln(os.Stderr, "error resolving address:", err)
+        fmt.Fprintln(os.Stderr, "Error resolving address:", err)
         os.Exit(1)
     }
+    
+    
+    client := bks.NewBksClientFactory(transport, protocolFactory)
+    
+    
 
-    useTransport,_ := transportFactory.GetTransport(transport)
-    client := bks.NewBksClientFactory(useTransport, protocolFactory)
     if err := transport.Open(); err != nil {
         fmt.Fprintln(os.Stderr, "Error opening socket to "+HOST+":"+PORT, " ", err)
         os.Exit(1)
     }
-    defer transport.Close()
+
+    defer socket.Close()
 
 	xn := "2018"
 	xq := "1"
 	stuid := "201626010520"
 	password := "WudUozhI"
 
-	data,_ := client.GetClassTable(context.Background(),xn,xq,stuid,password)
-	fmt.Printf(data)
+    data,err := client.GetGrade(context.Background(),xn,xq,stuid,password)
+    if err != nil {
+        fmt.Fprintln(os.Stderr, "Error func client:", err)
+    }
+
+    data,err = client.GetClassTable(context.Background(),xn,xq,stuid,password)
+    if err != nil {
+        fmt.Fprintln(os.Stderr, "Error func client:", err)
+    }
+
+
+    fmt.Printf(data)
+    fmt.Printf("Hello World")
 
 }
 
