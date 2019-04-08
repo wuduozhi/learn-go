@@ -1,27 +1,67 @@
 package main
-
 import (
     "fmt"
-    "database/sql"
-    _ "github.com/go-sql-driver/mysql"
+    "math/rand"
+    "strings"
+    "sync"
+    "time"
 )
+func init() {
+    rand.Seed(time.Now().Unix())
+}
 
-func main() {
-    fmt.Println("Go MySQL Tutorial")
+func sleep(){
+	time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond)
 
-    // Open up our database connection.
-    // I've set up a database on my local machine using phpmyadmin.
-    // The database is called testDb
-    db, err := sql.Open("mysql", "root:WudUozhI199&@tcp(127.0.0.1:3306)/goweb")
+}
+func reader(c chan int,m *sync.RWMutex,wg *sync.WaitGroup){
+	sleep()
+	m.RLock()
+	c <- 1
+	sleep()
+	c <- -1
+	m.RUnlock()
+	wg.Done()
+}
 
-    // if there is an error opening the connection, handle it
-    if err != nil {
-		fmt.Println("Go MySQL Tutorial")
-        panic(err.Error())
+func writer(c chan int, m *sync.RWMutex, wg *sync.WaitGroup) {
+    sleep()
+    m.Lock()
+    c <- 1
+    sleep()
+    c <- -1
+    m.Unlock()
+    wg.Done()
+}
+
+
+func main(){
+	var m sync.RWMutex
+	var rs,ws int
+	rsCh := make(chan int)
+	wsCh := make(chan int)
+
+	go func(){
+		for{
+			select {
+			case n := <-rsCh:
+				rs += n
+			case n := <-wsCh:
+				ws += n
+			}
+			fmt.Printf("%s%s\n", strings.Repeat("R", rs),strings.Repeat("W", ws))
+		}
+	}()
+
+	wg := sync.WaitGroup{}
+    for i := 0; i < 10; i++ {
+        wg.Add(1)
+        go reader(rsCh, &m, &wg)
     }
-
-    // defer the close till after the main function has finished
-    // executing
-    defer db.Close()
+    for i := 0; i < 3; i++ {
+        wg.Add(1)
+        go writer(wsCh, &m, &wg)
+    }
+    wg.Wait()
 
 }
