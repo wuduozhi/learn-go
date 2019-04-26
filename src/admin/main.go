@@ -1,67 +1,26 @@
 package main
+
 import (
-    "fmt"
-    "math/rand"
-    "strings"
-    "sync"
-    "time"
+	"bytes"
+	"fmt"
+	"encoding/base64"
+	"runtime"
 )
-func init() {
-    rand.Seed(time.Now().Unix())
+
+func main() {
+	fmt.Printf("%q\n", bytes.Split([]byte("a,b,c"), []byte(",")))
+	fmt.Printf("%q\n", bytes.Split([]byte("a man a plan a canal panama"), []byte("a ")))
+	fmt.Printf("%q\n", bytes.Split([]byte(" xyz "), []byte("")))
+	fmt.Printf("%q\n", bytes.Split([]byte(""), []byte("Bernardo O'Higgins")))
+
+	b, _ := base64.StdEncoding.DecodeString("V3VkdW96aGlAcXEuY29t")
+	fmt.Println(b)
+
+	call()
+	call()
 }
 
-func sleep(){
-	time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond)
-
-}
-func reader(c chan int,m *sync.RWMutex,wg *sync.WaitGroup){
-	sleep()
-	m.RLock()
-	c <- 1
-	sleep()
-	c <- -1
-	m.RUnlock()
-	wg.Done()
-}
-
-func writer(c chan int, m *sync.RWMutex, wg *sync.WaitGroup) {
-    sleep()
-    m.Lock()
-    c <- 1
-    sleep()
-    c <- -1
-    m.Unlock()
-    wg.Done()
-}
-
-
-func main(){
-	var m sync.RWMutex
-	var rs,ws int
-	rsCh := make(chan int)
-	wsCh := make(chan int)
-
-	go func(){
-		for{
-			select {
-			case n := <-rsCh:
-				rs += n
-			case n := <-wsCh:
-				ws += n
-			}
-			fmt.Printf("%s%s\n", strings.Repeat("R", rs),strings.Repeat("W", ws))
-		}
-	}()
-
-	wg := sync.WaitGroup{}
-    for i := 0; i < 10; i++ {
-        wg.Add(1)
-        go reader(rsCh, &m, &wg)
-    }
-    for i := 0; i < 3; i++ {
-        wg.Add(1)
-        go writer(wsCh, &m, &wg)
-    }
-    wg.Wait()
-
+func call() {
+    var calldepth = 1;
+    fmt.Println(runtime.Caller(calldepth))
 }
