@@ -1,0 +1,86 @@
+<div class="card">
+    <div class="card-head">
+        <div class="left">电视管理</div>
+        <div class="right">
+            <i class="zmdi zmdi-upload" onclick="location.reload(0)"></i>
+            <i class="zmdi zmdi-refresh-sync" onclick="location.reload(0)"></i>
+        </div>
+    </div>
+    <div class="row card-body" id="dashOne" style="padding: 0 20px">
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-head">
+                        <div class="left">在线电视数</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-flex">
+                            <div class="left">
+                                <div class="text-card">
+                                    <h1>
+                                        <span id="onlinetv">0</span>台</h1>
+                                    <p>正在在线的电视</p>
+                                </div>
+                            </div>
+                            <div class="right">
+                                <div class="text-card">
+                                    <button class="btn btn-primary">realtime</button>
+                                    <!-- <p>40%</p> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-head">
+                        <div class="left">离线电视数</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-flex">
+                            <div class="left">
+                                <div class="text-card">
+                                    <h1>
+                                        <span id="offlinetv">0</span>台</h1>
+                                    <p>已经离线的电视</p>
+                                </div>
+                            </div>
+                            <div class="right">
+                                <div class="text-card">
+                                    <button class="btn btn-info">realtime</button>
+                                    <!-- <p>90%</p> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-head">
+                        <div class="left">在线率</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-flex">
+                            <div class="left">
+                                <div class="text-card">
+                                    <h1 id="ratio">0%</h1>
+                                    <p>一共
+                                        <span id="total">0</span>台</p>
+                                </div>
+                            </div>
+                            <div class="right">
+                                <div class="text-card">
+                                    <button class="btn btn-warning">realtime</button>
+                                    <!-- <p>53%</p> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+
+<div id="cardcollection"></div>

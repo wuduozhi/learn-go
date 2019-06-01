@@ -1,7 +1,8 @@
 package models
 
 import (
-	"log"
+	"smtp-server/pkg/logging"
+	"errors"
 )
 
 type User struct {
@@ -49,8 +50,50 @@ func Login(email,password string) User{
 	return user
 }
 
+
+func UserExists(email string) error{
+	var count int
+	statement := "select count(*) from users where email=?"
+	row,err:= Db.Query(statement,email)
+	check_err(err)
+
+	for row.Next(){
+		err = row.Scan(&count)
+
+		if err != nil{
+			logging.Info(err)
+			return err
+		}
+	}
+
+	if count > 0{
+		return nil
+	}else{
+		return errors.New("User don't exist")
+	}
+}
+
+func AuthUser(email,password string) error{
+	statement := "SELECT count(*) from users where email=? and password=?"
+
+	rows, err := Db.Query(statement,email,password)
+	check_err(err)
+	
+	defer rows.Close()
+	var count int
+	for rows.Next() {
+		rows.Scan(&count)
+	}
+
+	if count > 0{
+		return nil
+	}else{
+		return errors.New("User don't exist")
+	}
+}
+
 func check_err(err error){
 	if err != nil {
-		log.Fatal(err)
+		logging.Info(err)
 	}
 }

@@ -1,0 +1,93 @@
+<html lang="en" style="background: #6F6486">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" href="src/img/fav.png">
+    <!-- style -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/app.css">
+    <!-- titel -->
+    <title>灵动校园后台登录</title>
+    <style></style>
+    <link rel="stylesheet" href="src/plug/animate.min.css"> </head>
+
+<body>
+    <!-- strat Layout -->
+    <div id="ex-page">
+        <div class="row justify-content-center">
+            <div class="logo-wrapper">
+                <div class="col-lg-6">
+                    <div class="logo">
+                        <img src="fav.png" alt="logo">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- text -->
+                        <div class="text">
+                            <p>login</p>
+                        </div>
+                        <div class="inputs">
+                            <div class="form">
+                                <input placeholder="password" type="password" class="form-control" id="password">
+                            </div>
+                            <div class="form">
+                                <a href="#" class="btn btn-primary" onclick="login()">sign in</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end Layout -->
+
+
+    <!-- script -->
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/md5.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script>
+        const urlBase = ""
+        const urlLogin = "login"
+        function login() {
+            var form = new FormData()
+            password = $('#password').val()
+            hash = md5(password)
+            console.log(hash)
+            form.append("password", hash)
+            var settings = {
+                "async": true,
+                "crossDomain": true,
+                "url": urlBase + urlLogin,
+                "method": "POST",
+                "headers": {
+                    "Cache-Control": "no-cache",
+                },
+                "processData": false,
+                "contentType": false,
+                "mimeType": "multipart/form-data",
+                "data": form
+            }
+
+            $.ajax(settings).done(function (response) {
+                data = JSON.parse(response)
+                window.localStorage.time = data.time
+                window.localStorage.password = hash
+                if (data.status == "ok")
+                    location.href = "index.html"
+            })
+        }
+    </script>
+
+
+    <!-- <script src="node_modules/nicescroll/dist/jquery.nicescroll.min.js"></script> -->
+</body>
+
+</html>
